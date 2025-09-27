@@ -3,6 +3,7 @@ import {BrowserRouter,Routes,Route} from 'react-router-dom'
 import Login from '../components/Auth/Login'
 import Register from '../components/Auth/Register'
 import Dashboard from '../components/Dashboard/Dashboard'
+import Farms from '../components/Farms/Farm'
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
      <Route path='/' element= {< Login/>} /> 
      <Route path='/register' element ={< Register />} />
      <Route path='/dashboard' element={<Dashboard />} />
+     <Route path='/farm' element={<Farms />} />
      </Routes>
     </BrowserRouter>
   )
