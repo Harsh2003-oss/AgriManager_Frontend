@@ -265,6 +265,7 @@ const Weather = () => {
                   <p className="text-gray-600">Region:</p>
                   <p className="font-medium">{weatherData.weather.location.region}</p>
                 </div>
+                
                 <div>
                   <p className="text-gray-600">Latitude:</p>
                   <p className="font-medium">{weatherData.weather.location.lat}°</p>
