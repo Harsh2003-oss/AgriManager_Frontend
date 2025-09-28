@@ -21,12 +21,13 @@ try {
     });
     
     console.log('Response:', response.data);
+    window.location.href = '/dashboard';
     alert('Login successful!');
     
     localStorage.setItem('token', response.data.token);
         
 } catch (error) {
-       console.error('Error:', error);
+       console.error(error.response?.data?.error || 'Login failed');
     alert('Something went wrong');
 }
     }

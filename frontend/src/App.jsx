@@ -7,6 +7,7 @@ import Crops from '../components/Crops/Crop';
 import Expenses from '../components/Expenses/Expenses';
 import Login from '../components/Auth/Login';
 import Register from '../components/Auth/Register';
+import Weather from '../components/Weather/Weather';
 
 function App() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -85,6 +86,14 @@ function App() {
               </div>
             </div>
           } />
+
+
+        <Route path="/weather" element={
+  <ProtectedRoute>
+    <Weather />
+  </ProtectedRoute>
+} />
+
         </Routes>
       </div>
     </Router>

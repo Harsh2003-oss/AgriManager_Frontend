@@ -20,7 +20,8 @@ const Navbar = () => {
     { name: 'Dashboard', path: '/dashboard', icon: '📊' },
     { name: 'Farms', path: '/farms', icon: '🏡' },
     { name: 'Crops', path: '/crops', icon: '🌾' },
-    { name: 'Expenses', path: '/expenses', icon: '💰' }
+    { name: 'Expenses', path: '/expenses', icon: '💰' },
+    { name: 'Weather', path: '/weather', icon: '🌤️' }
   ];
 
   return (
