@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import api from '../../config/api'
+import api from '../../src/config/api'
 
 const Register = () => {
     const[name,setName] = useState('')

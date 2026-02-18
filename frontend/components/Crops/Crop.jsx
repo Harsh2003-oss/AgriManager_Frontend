@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../config/api';
+import api from '../../src/config/api'
 
 const Crops = ({ onDataChange }) => {
   const [crops, setCrops] = useState([]);
