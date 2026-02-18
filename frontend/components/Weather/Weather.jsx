@@ -1,6 +1,5 @@
-// components/Weather/Weather.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../config/api';
 
 const Weather = () => {
   const [farms, setFarms] = useState([]);
@@ -15,10 +14,7 @@ const Weather = () => {
 
   const fetchFarms = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-
-      const response = await axios.get('http://localhost:3000/farms/myfarms', { headers });
+      const response = await api.get('/farms/myfarms');
       setFarms(response.data.farms || []);
     } catch (error) {
       console.error('Error fetching farms:', error);
@@ -33,10 +29,7 @@ const Weather = () => {
     setError('');
 
     try {
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-
-      const response = await axios.get(`http://localhost:3000/weather/farm/${farmId}`, { headers });
+      const response = await api.get(`/weather/farm/${farmId}`);
       setWeatherData(response.data);
     } catch (error) {
       console.error('Error fetching weather:', error);
@@ -88,17 +81,14 @@ const Weather = () => {
     <div className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed relative"
          style={{backgroundImage: "url('https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80')"}}>
       
-      {/* Overlay for opacity */}
       <div className="absolute inset-0 bg-white bg-opacity-85"></div>
       
-      {/* Content wrapper */}
       <div className="relative z-10 max-w-7xl mx-auto p-6">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Weather Information</h1>
           <p className="text-gray-600">Get real-time weather data for your farms</p>
         </div>
 
-        {/* Farm Selection */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Select Farm for Weather Data:
@@ -117,7 +107,6 @@ const Weather = () => {
           </select>
         </div>
 
-        {/* Loading State */}
         {loading && (
           <div className="text-center py-12">
             <div className="text-4xl mb-4">🌤️</div>
@@ -125,7 +114,6 @@ const Weather = () => {
           </div>
         )}
 
-        {/* Error State */}
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
             <p className="font-medium">Error:</p>
@@ -133,10 +121,8 @@ const Weather = () => {
           </div>
         )}
 
-        {/* Weather Data Display */}
         {weatherData && !loading && (
           <div className="space-y-6">
-            {/* Main Weather Card */}
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div className="flex items-center justify-between mb-6">
                 <div>
@@ -169,9 +155,7 @@ const Weather = () => {
               </div>
             </div>
 
-            {/* Detailed Weather Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Atmospheric Conditions */}
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Atmospheric Conditions</h3>
                 <div className="space-y-3">
@@ -190,7 +174,6 @@ const Weather = () => {
                 </div>
               </div>
 
-              {/* UV Index */}
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">UV Index</h3>
                 <div className="text-center">
@@ -204,7 +187,6 @@ const Weather = () => {
                 </div>
               </div>
 
-              {/* Farming Insights */}
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Farming Insights</h3>
                 <div className="space-y-3">
@@ -253,7 +235,6 @@ const Weather = () => {
               </div>
             </div>
 
-            {/* Location Details */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Location Details</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -265,7 +246,6 @@ const Weather = () => {
                   <p className="text-gray-600">Region:</p>
                   <p className="font-medium">{weatherData.weather.location.region}</p>
                 </div>
-                
                 <div>
                   <p className="text-gray-600">Latitude:</p>
                   <p className="font-medium">{weatherData.weather.location.lat}°</p>
@@ -279,7 +259,6 @@ const Weather = () => {
           </div>
         )}
 
-        {/* No Farm Selected State */}
         {!selectedFarm && !loading && (
           <div className="text-center py-16 bg-white rounded-lg shadow-md">
             <div className="text-6xl mb-6">🌤️</div>

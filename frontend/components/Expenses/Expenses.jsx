@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../config/api';
 
 const Expenses = ({ onDataChange }) => {
   const [expenses, setExpenses] = useState([]);
@@ -26,14 +26,10 @@ const Expenses = ({ onDataChange }) => {
 
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-
-      // Fetch expenses, farms, and crops
       const [expensesResponse, farmsResponse, cropsResponse] = await Promise.all([
-        axios.get('http://localhost:3000/expenses/getexpense', { headers }),
-        axios.get('http://localhost:3000/farms/myfarms', { headers }),
-        axios.get('http://localhost:3000/crops/mycrops', { headers })
+        api.get('/expenses/getexpense'),
+        api.get('/farms/myfarms'),
+        api.get('/crops/mycrops')
       ]);
 
       setExpenses(expensesResponse.data.expense || []);
@@ -56,10 +52,6 @@ const Expenses = ({ onDataChange }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-
-      // Prepare data for backend
       const submitData = {
         amount: parseFloat(formData.amount),
         description: formData.description,
@@ -68,24 +60,18 @@ const Expenses = ({ onDataChange }) => {
         date: formData.date
       };
 
-      // Add crop if selected
       if (formData.crop) {
         submitData.crop = formData.crop;
       }
 
       if (editingExpense) {
-        // Update expense
-        await axios.put(`http://localhost:3000/expenses/${editingExpense._id}`, submitData, { headers });
+        await api.put(`/expenses/${editingExpense._id}`, submitData);
       } else {
-        // Create new expense
-        await axios.post('http://localhost:3000/expenses/create', submitData, { headers });
+        await api.post('/expenses/create', submitData);
       }
 
-      // Refresh data and notify dashboard
       await fetchData();
       onDataChange && onDataChange();
-      
-      // Reset form
       resetForm();
       
     } catch (error) {
@@ -110,15 +96,9 @@ const Expenses = ({ onDataChange }) => {
   const handleDelete = async (expenseId) => {
     if (window.confirm('Are you sure you want to delete this expense?')) {
       try {
-        const token = localStorage.getItem('token');
-        const headers = { Authorization: `Bearer ${token}` };
-        
-        await axios.delete(`http://localhost:3000/expenses/${expenseId}`, { headers });
-        
-        // Refresh data and notify dashboard
+        await api.delete(`/expenses/${expenseId}`);
         await fetchData();
         onDataChange && onDataChange();
-        
       } catch (error) {
         console.error('Error deleting expense:', error);
         alert('Error deleting expense');
@@ -182,10 +162,8 @@ const Expenses = ({ onDataChange }) => {
     <div className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed relative"
          style={{backgroundImage: "url('https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80')"}}>
       
-      {/* White overlay for opacity */}
       <div className="absolute inset-0 bg-white bg-opacity-80"></div>
       
-      {/* Content wrapper */}
       <div className="relative z-10 max-w-7xl mx-auto p-6">
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -200,7 +178,6 @@ const Expenses = ({ onDataChange }) => {
           </button>
         </div>
 
-        {/* Filter Section */}
         <div className="mb-6 bg-white rounded-lg shadow-md p-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Category:</label>
           <select
@@ -217,7 +194,6 @@ const Expenses = ({ onDataChange }) => {
           </select>
         </div>
 
-        {/* Form Modal */}
         {showForm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
@@ -349,7 +325,6 @@ const Expenses = ({ onDataChange }) => {
           </div>
         )}
 
-        {/* Expenses Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredExpenses.length > 0 ? (
             filteredExpenses.map(expense => (

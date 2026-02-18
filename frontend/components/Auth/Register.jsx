@@ -1,37 +1,37 @@
 import React, { useState } from 'react'
-import axios from 'axios'
+import api from '../../config/api'
 
-const Register= () => {
+const Register = () => {
     const[name,setName] = useState('')
     const[email,setEmail] = useState('')
     const[password,setPassword] = useState('')
     const[phonenumber,setphoneNumber] = useState('')
 
     const handleSubmit = async (e) => {
-e.preventDefault();
+        e.preventDefault();
 
-if(!email || !password || !name ||!phonenumber){
-    alert("Please fill all the fields")
-    return
-}
+        if(!email || !password || !name ||!phonenumber){
+            alert("Please fill all the fields")
+            return
+        }
 
-try {
- const response = await axios.post('http://localhost:3000/register', {
-    name,
-      email,
-      password,
-      phonenumber
-    });
-    
-    console.log('Response:', response.data);
-    alert('Register successful!');
-    
-    localStorage.setItem('token', response.data.token);
-        
-} catch (error) {
-       console.error('Error:', error);
-    alert('Something went wrong');
-}
+        try {
+            const response = await api.post('/register', {
+                name,
+                email,
+                password,
+                phonenumber
+            });
+            
+            console.log('Response:', response.data);
+            localStorage.setItem('token', response.data.token);
+            alert('Register successful!');
+            window.location.href = '/dashboard';
+                
+        } catch (error) {
+            console.error('Error:', error);
+            alert(error.response?.data?.error || 'Something went wrong');
+        }
     }
 
   return (
@@ -39,18 +39,17 @@ try {
       <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">AgriManager</h1>
-          <p className="text-gray-600">Welcome back, farmer!</p>
+          <p className="text-gray-600">Join AgriManager today!</p>
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-6">
-
-         <input
-         value={name}
-         onChange={(e)=>setName(e.target.value)}
-         placeholder='Enter name'
-         type="name" 
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-         />
+          <input
+            value={name}
+            onChange={(e)=>setName(e.target.value)}
+            placeholder='Enter name'
+            type="text" 
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+          />
 
           <input
             value={email}
@@ -67,15 +66,14 @@ try {
             placeholder='Enter password'
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
           />
-          
 
-              <input
-         value={phonenumber}
-         onChange={(e)=>setphoneNumber(e.target.value)}
-         placeholder='Enter contact number'
-         type="name" 
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-         />
+          <input
+            value={phonenumber}
+            onChange={(e)=>setphoneNumber(e.target.value)}
+            placeholder='Enter contact number'
+            type="tel" 
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+          />
 
           <button
             type='submit'

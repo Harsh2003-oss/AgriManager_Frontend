@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../config/api';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -19,19 +19,14 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
+      // Fetch farms, crops, and expenses
+      const [farmsResponse, cropsResponse, expensesResponse] = await Promise.all([
+        api.get('/farms/myfarms'),
+        api.get('/crops/mycrops'),
+        api.get('/expenses/getexpense')
+      ]);
 
-      // Fetch farms using your endpoint
-      const farmsResponse = await axios.get('http://localhost:3000/farms/myfarms', { headers });
-      
-      // Fetch crops using your endpoint
-      const cropsResponse = await axios.get('http://localhost:3000/crops/mycrops', { headers });
-      
-      // Fetch expenses using your endpoint
-      const expensesResponse = await axios.get('http://localhost:3000/expenses/getexpense', { headers });
-
-      // Get data from your response structure
+      // Get data from response structure
       const farms = farmsResponse.data.farms || [];
       const crops = cropsResponse.data.crops || [];
       const expenses = expensesResponse.data.expense || [];

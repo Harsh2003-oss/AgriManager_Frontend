@@ -1,35 +1,33 @@
 import React, { useState } from 'react'
-import axios from 'axios'
+import api from '../../config/api'
 
 const Login = () => {
-
     const[email,setEmail]=useState('')
     const[password,setPassword] = useState('')
 
     const handleSubmit = async (e) => {
-e.preventDefault();
+        e.preventDefault();
 
-if(!email || !password){
-    alert("Please fill all the fields")
-    return
-}
+        if(!email || !password){
+            alert("Please fill all the fields")
+            return
+        }
 
-try {
- const response = await axios.post('http://localhost:3000/login', {
-      email,
-      password
-    });
-    
-    console.log('Response:', response.data);
-    window.location.href = '/dashboard';
-    alert('Login successful!');
-    
-    localStorage.setItem('token', response.data.token);
-        
-} catch (error) {
-       console.error(error.response?.data?.error || 'Login failed');
-    alert('Something went wrong');
-}
+        try {
+            const response = await api.post('/login', {
+                email,
+                password
+            });
+            
+            console.log('Response:', response.data);
+            localStorage.setItem('token', response.data.token);
+            alert('Login successful!');
+            window.location.href = '/dashboard';
+                
+        } catch (error) {
+            console.error(error.response?.data?.error || 'Login failed');
+            alert(error.response?.data?.error || 'Something went wrong');
+        }
     }
 
   return (

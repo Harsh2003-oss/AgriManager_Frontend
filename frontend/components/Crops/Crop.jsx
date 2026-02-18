@@ -1,7 +1,5 @@
-
-// components/Crops/Crops.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../config/api';
 
 const Crops = ({ onDataChange }) => {
   const [crops, setCrops] = useState([]);
@@ -24,13 +22,9 @@ const Crops = ({ onDataChange }) => {
 
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-
-      // Fetch crops and farms
       const [cropsResponse, farmsResponse] = await Promise.all([
-        axios.get('http://localhost:3000/crops/mycrops', { headers }),
-        axios.get('http://localhost:3000/farms/myfarms', { headers })
+        api.get('/crops/mycrops'),
+        api.get('/farms/myfarms')
       ]);
 
       setCrops(cropsResponse.data.crops || []);
@@ -52,22 +46,14 @@ const Crops = ({ onDataChange }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-
       if (editingCrop) {
-        // Update crop
-        await axios.put(`http://localhost:3000/crops/${editingCrop._id}`, formData, { headers });
+        await api.put(`/crops/${editingCrop._id}`, formData);
       } else {
-        // Create new crop
-        await axios.post('http://localhost:3000/crops/create', formData, { headers });
+        await api.post('/crops/create', formData);
       }
 
-      // Refresh data and notify dashboard
       await fetchData();
       onDataChange && onDataChange();
-      
-      // Reset form
       resetForm();
       
     } catch (error) {
@@ -92,15 +78,9 @@ const Crops = ({ onDataChange }) => {
   const handleDelete = async (cropId) => {
     if (window.confirm('Are you sure you want to delete this crop?')) {
       try {
-        const token = localStorage.getItem('token');
-        const headers = { Authorization: `Bearer ${token}` };
-        
-        await axios.delete(`http://localhost:3000/crops/${cropId}`, { headers });
-        
-        // Refresh data and notify dashboard
+        await api.delete(`/crops/${cropId}`);
         await fetchData();
         onDataChange && onDataChange();
-        
       } catch (error) {
         console.error('Error deleting crop:', error);
         alert('Error deleting crop');
@@ -148,10 +128,8 @@ const Crops = ({ onDataChange }) => {
     <div className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed relative"
          style={{backgroundImage: "url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80')"}}>
       
-      {/* White overlay for opacity */}
       <div className="absolute inset-0 bg-white bg-opacity-80"></div>
       
-      {/* Content wrapper */}
       <div className="relative z-10 max-w-7xl mx-auto p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-800">Crops Management</h1>
@@ -163,7 +141,6 @@ const Crops = ({ onDataChange }) => {
           </button>
         </div>
 
-        {/* Form Modal */}
         {showForm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
@@ -285,7 +262,6 @@ const Crops = ({ onDataChange }) => {
           </div>
         )}
 
-        {/* Crops Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {crops.length > 0 ? (
             crops.map(crop => (

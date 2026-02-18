@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../config/api';
 
 const Farms = ({ onDataChange }) => {
   const [farms, setFarms] = useState([]);
@@ -22,10 +22,7 @@ const Farms = ({ onDataChange }) => {
 
   const fetchFarms = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-
-      const response = await axios.get('http://localhost:3000/farms/myfarms', { headers });
+      const response = await api.get('/farms/myfarms');
       setFarms(response.data.farms || []);
       setLoading(false);
     } catch (error) {
@@ -56,10 +53,6 @@ const Farms = ({ onDataChange }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-
-      // Prepare data for backend (matching your schema)
       const submitData = {
         name: formData.name,
         location: {
@@ -71,18 +64,13 @@ const Farms = ({ onDataChange }) => {
       };
 
       if (editingFarm) {
-        // Update farm
-        await axios.put(`http://localhost:3000/farms/${editingFarm._id}`, submitData, { headers });
+        await api.put(`/farms/${editingFarm._id}`, submitData);
       } else {
-        // Create new farm
-        await axios.post('http://localhost:3000/farms/create', submitData, { headers });
+        await api.post('/farms/create', submitData);
       }
 
-      // Refresh data and notify dashboard
       await fetchFarms();
       onDataChange && onDataChange();
-      
-      // Reset form
       resetForm();
       
     } catch (error) {
@@ -108,15 +96,9 @@ const Farms = ({ onDataChange }) => {
   const handleDelete = async (farmId) => {
     if (window.confirm('Are you sure you want to delete this farm? This will also delete all associated crops.')) {
       try {
-        const token = localStorage.getItem('token');
-        const headers = { Authorization: `Bearer ${token}` };
-        
-        await axios.delete(`http://localhost:3000/farms/${farmId}`, { headers });
-        
-        // Refresh data and notify dashboard
+        await api.delete(`/farms/${farmId}`);
         await fetchFarms();
         onDataChange && onDataChange();
-        
       } catch (error) {
         console.error('Error deleting farm:', error);
         alert('Error deleting farm');
@@ -158,7 +140,6 @@ const Farms = ({ onDataChange }) => {
         </button>
       </div>
 
-      {/* Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
@@ -246,7 +227,6 @@ const Farms = ({ onDataChange }) => {
         </div>
       )}
 
-      {/* Farms Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {farms.length > 0 ? (
           farms.map(farm => (
@@ -306,7 +286,7 @@ const Farms = ({ onDataChange }) => {
           </div>
         )}
       </div>
-      </div>
+    </div>
   );
 };
 
